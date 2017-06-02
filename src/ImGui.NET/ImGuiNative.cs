@@ -773,18 +773,29 @@ namespace ImGuiNET
         public static NativeFont* ImFontAtlas_AddFontDefault(NativeFontAtlas* atlas) { return ImFontAtlas_AddFontDefault(atlas, IntPtr.Zero); }
 
         [DllImport(cimguiLib)]
-        public static extern NativeFont* ImFontAtlas_AddFontFromFileTTF(NativeFontAtlas* atlas, string filename, float size_pixels, IntPtr font_cfg, char* glyph_ranges);
+        public static extern NativeFont* ImFontAtlas_AddFontFromFileTTF(NativeFontAtlas* atlas, string filename, float size_pixels, IntPtr font_cfg, ushort* glyph_ranges);
         [DllImport(cimguiLib)]
-        public static extern NativeFont* ImFontAtlas_AddFontFromMemoryTTF(NativeFontAtlas* atlas, void* ttf_data, int ttf_size, float size_pixels, IntPtr font_cfg, char* glyph_ranges);
+        public static extern NativeFont* ImFontAtlas_AddFontFromMemoryTTF(NativeFontAtlas* atlas, void* ttf_data, int ttf_size, float size_pixels, IntPtr font_cfg, ushort* glyph_ranges);
         [DllImport(cimguiLib)]
-        public static extern NativeFont* ImFontAtlas_AddFontFromMemoryCompressedTTF(NativeFontAtlas* atlas, void* compressed_ttf_data, int compressed_ttf_size, float size_pixels, FontConfig* font_cfg, char* glyph_ranges);
+        public static extern NativeFont* ImFontAtlas_AddFontFromMemoryCompressedTTF(NativeFontAtlas* atlas, void* compressed_ttf_data, int compressed_ttf_size, float size_pixels, FontConfig* font_cfg, ushort* glyph_ranges);
         [DllImport(cimguiLib)]
-        public static extern NativeFont* ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(NativeFontAtlas* atlas, string compressed_ttf_data_base85, float size_pixels, FontConfig* font_cfg, char* glyph_ranges);
+        public static extern NativeFont* ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(NativeFontAtlas* atlas, string compressed_ttf_data_base85, float size_pixels, FontConfig* font_cfg, ushort* glyph_ranges);
 
         [DllImport(cimguiLib)]
         public static extern void ImFontAtlas_ClearTexData(NativeFontAtlas* atlas);
         [DllImport(cimguiLib)]
         public static extern void ImFontAtlas_Clear(NativeFontAtlas* atlas);
+
+        [DllImport(cimguiLib)]
+        public static extern ushort* ImFontAtlas_GetGlyphRangesDefault(NativeFontAtlas* atlas);
+        [DllImport(cimguiLib)]
+        public static extern ushort* ImFontAtlas_GetGlyphRangesKorean(NativeFontAtlas* atlas);
+        [DllImport(cimguiLib)]
+        public static extern ushort* ImFontAtlas_GetGlyphRangesJapanese(NativeFontAtlas* atlas);
+        [DllImport(cimguiLib)]
+        public static extern ushort* ImFontAtlas_GetGlyphRangesChinese(NativeFontAtlas* atlas);
+        [DllImport(cimguiLib)]
+        public static extern ushort* ImFontAtlas_GetGlyphRangesCyrillic(NativeFontAtlas* atlas);
 
 
         [DllImport(cimguiLib)]

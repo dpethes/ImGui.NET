@@ -210,14 +210,28 @@ namespace ImGuiNET
         }
     }
 
+    public enum GlyphRanges
+    {
+        Korean, Japanese, Chinese, Cyrillic, LatinExtended
+    }
+
     public unsafe class FontAtlas
     {
         private readonly NativeFontAtlas* _atlasPtr;
+
+        private readonly ushort[] _glyphRangeLatinExtended = new ushort[]
+        {
+                0x0020, 0x00FF, // Basic Latin + Latin Supplement
+                0x0100, 0x017F, // Latin Extended-A
+                0
+        };
 
         public FontAtlas(NativeFontAtlas* atlasPtr)
         {
             _atlasPtr = atlasPtr;
         }
+
+        public NativeFontAtlas* GetNativePointer() => _atlasPtr;
 
         public FontTextureData GetTexDataAsAlpha8()
         {
@@ -268,6 +282,39 @@ namespace ImGuiNET
         public Font AddFontFromFileTTF(string fileName, float pixelSize)
         {
             NativeFont* nativeFontPtr = ImGuiNative.ImFontAtlas_AddFontFromFileTTF(_atlasPtr, fileName, pixelSize, IntPtr.Zero, null);
+            return new Font(nativeFontPtr);
+        }
+
+        public Font AddFontFromFileTTF(string fileName, float pixelSize, ushort[] glyphRanges)
+        {
+            fixed (ushort* ptrBuf = _glyphRangeLatinExtended)
+            {
+                NativeFont* nativeFontPtr = ImGuiNative.ImFontAtlas_AddFontFromFileTTF(_atlasPtr, fileName, pixelSize, IntPtr.Zero, ptrBuf);
+                return new Font(nativeFontPtr);
+            }
+        }
+
+        public Font AddFontFromFileTTF(string fileName, float pixelSize, GlyphRanges glyphRanges)
+        {
+            ushort* ptrBuf = ImGuiNative.ImFontAtlas_GetGlyphRangesDefault(_atlasPtr);
+            switch (glyphRanges)
+            {
+                case GlyphRanges.Korean:
+                    ptrBuf = ImGuiNative.ImFontAtlas_GetGlyphRangesKorean(_atlasPtr);
+                    break;
+                case GlyphRanges.Japanese:
+                    ptrBuf = ImGuiNative.ImFontAtlas_GetGlyphRangesJapanese(_atlasPtr);
+                    break;
+                case GlyphRanges.Chinese:
+                    ptrBuf = ImGuiNative.ImFontAtlas_GetGlyphRangesChinese(_atlasPtr);
+                    break;
+                case GlyphRanges.Cyrillic:
+                    ptrBuf = ImGuiNative.ImFontAtlas_GetGlyphRangesCyrillic(_atlasPtr);
+                    break;
+                case GlyphRanges.LatinExtended:
+                    return AddFontFromFileTTF(fileName, pixelSize, _glyphRangeLatinExtended);
+            }
+            NativeFont* nativeFontPtr = ImGuiNative.ImFontAtlas_AddFontFromFileTTF(_atlasPtr, fileName, pixelSize, IntPtr.Zero, ptrBuf);
             return new Font(nativeFontPtr);
         }
 
