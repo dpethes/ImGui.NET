@@ -41,10 +41,10 @@ namespace ImGuiNET
         // Window
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igBegin(string name, ref bool p_opened, WindowFlags flags);
+        public static extern bool igBegin(byte* name, ref bool p_opened, WindowFlags flags);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igBegin2(string name, ref bool p_opened, Vector2 size_on_first_use, float bg_alpha, WindowFlags flags);
+        public static extern bool igBegin2(byte* name, ref bool p_opened, Vector2 size_on_first_use, float bg_alpha, WindowFlags flags);
         [DllImport(cimguiLib)]
         public static extern void igEnd();
         [DllImport(cimguiLib)]
@@ -112,13 +112,13 @@ namespace ImGuiNET
         [DllImport(cimguiLib)]
         public static extern void igSetWindowFocus(); //(not recommended)
         [DllImport(cimguiLib)]
-        public static extern void igSetWindowPosByName(string name, Vector2 pos, SetCondition cond);
+        public static extern void igSetWindowPosByName(byte* name, Vector2 pos, SetCondition cond);
         [DllImport(cimguiLib)]
-        public static extern void igSetWindowSize2(string name, Vector2 size, SetCondition cond);
+        public static extern void igSetWindowSize2(byte* name, Vector2 size, SetCondition cond);
         [DllImport(cimguiLib)]
-        public static extern void igSetWindowCollapsed2(string name, bool collapsed, SetCondition cond);
+        public static extern void igSetWindowCollapsed2(byte* name, bool collapsed, SetCondition cond);
         [DllImport(cimguiLib)]
-        public static extern void igSetWindowFocus2(string name);
+        public static extern void igSetWindowFocus2(byte* name);
 
         [DllImport(cimguiLib)]
         public static extern float igGetScrollX();
@@ -275,33 +275,33 @@ namespace ImGuiNET
 
         // Widgets
         [DllImport(cimguiLib)]
-        public static extern void igText(string fmt);
+        public static extern void igText(byte* fmt);
 
         [DllImport(cimguiLib)]
-        public static extern void igTextColored(Vector4 col, string fmt);
+        public static extern void igTextColored(Vector4 col, byte* fmt);
 
         [DllImport(cimguiLib)]
-        public static extern void igTextDisabled(string fmt);
+        public static extern void igTextDisabled(byte* fmt);
         [DllImport(cimguiLib)]
-        public static extern void igTextWrapped(string fmt);
+        public static extern void igTextWrapped(byte* fmt);
 
         [DllImport(cimguiLib)]
         public static extern void igTextUnformatted(byte* text, byte* text_end);
 
         [DllImport(cimguiLib)]
-        public static extern void igLabelText(string label, string fmt);
+        public static extern void igLabelText(string label, byte* fmt);
 
         [DllImport(cimguiLib)]
         public static extern void igBullet();
 
         [DllImport(cimguiLib)]
-        public static extern void igBulletText(string fmt);
+        public static extern void igBulletText(byte* fmt);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igButton(string label, Vector2 size);
+        public static extern bool igButton(byte* label, Vector2 size);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igSmallButton(string label);
+        public static extern bool igSmallButton(byte* label);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool igInvisibleButton(string str_id, Vector2 size);
@@ -443,7 +443,7 @@ namespace ImGuiNET
         public static extern bool igInputText(string label, IntPtr buffer, uint buf_size, InputTextFlags flags, TextEditCallback callback, void* user_data);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igInputTextMultiline(string label, IntPtr buffer, uint buf_size, Vector2 size, InputTextFlags flags, TextEditCallback callback, void* user_data);
+        public static extern bool igInputTextMultiline(byte* label, IntPtr buffer, uint buf_size, Vector2 size, InputTextFlags flags, TextEditCallback callback, void* user_data);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool igInputFloat(string label, float* v, float step, float step_fast, int decimal_precision, InputTextFlags extra_flags);
@@ -472,11 +472,11 @@ namespace ImGuiNET
         // Widgets: Trees
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igTreeNode(string str_label_id);
+        public static extern bool igTreeNode(byte* label);
         
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igTreeNodeEx(string label, TreeNodeFlags flags = 0);        
+        public static extern bool igTreeNodeEx(byte* label, TreeNodeFlags flags = 0);        
 
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
@@ -564,15 +564,15 @@ namespace ImGuiNET
         public static extern void igEndMenuBar();
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igBeginMenu(string label, bool enabled);
+        public static extern bool igBeginMenu(byte* label, bool enabled);
         [DllImport(cimguiLib)]
         public static extern void igEndMenu();
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igMenuItem(string label, string shortcut, bool selected, bool enabled);
+        public static extern bool igMenuItem(byte* label, string shortcut, bool selected, bool enabled);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igMenuItemPtr(string label, string shortcut, bool* p_selected, bool enabled);
+        public static extern bool igMenuItemPtr(byte* label, string shortcut, bool* p_selected, bool enabled);
 
         // Popup
         [DllImport(cimguiLib)]
@@ -582,21 +582,7 @@ namespace ImGuiNET
         public static extern bool igBeginPopup(string str_id);
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]
-        public static extern bool igBeginPopupModal(string name, byte* p_opened, WindowFlags extra_flags);
-
-        public static bool igBeginPopupModal(string name, WindowFlags extra_flags)
-        {
-            return igBeginPopupModal(name, null, extra_flags);
-        }
-
-        public static bool igBeginPopupModal(string name, ref bool p_opened, WindowFlags extra_flags)
-        {
-            byte value = p_opened ? (byte)1 : (byte)0;
-            bool result = igBeginPopupModal(name, &value, extra_flags);
-
-            p_opened = value == 1 ? true : false;
-            return result;
-        }
+        public static extern bool igBeginPopupModal(byte* name, byte* p_opened, WindowFlags extra_flags);
 
         [DllImport(cimguiLib)]
         [return: MarshalAs(UnmanagedType.I1)]

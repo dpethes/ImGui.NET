@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Text;
 
 namespace ImGuiNET
 {
@@ -73,37 +74,34 @@ namespace ImGuiNET
             return ImGuiNative.igGetIdStrRange(idBegin, idEnd);
         }
 
-        public static void Text(string message)
+        public static unsafe void Text(string message)
         {
-            ImGuiNative.igText(message);
+            fixed (byte* p = NativeUtf8FromString(message)) { ImGuiNative.igText(p); }
         }
 
-        public static void Text(string message, Vector4 color)
+        public static unsafe void Text(string message, Vector4 color)
         {
-            ImGuiNative.igTextColored(color, message);
+            fixed (byte* p = NativeUtf8FromString(message)) { ImGuiNative.igTextColored(color, p); }
         }
 
-        public static void TextDisabled(string text)
+        public static unsafe void TextDisabled(string text)
         {
-            ImGuiNative.igTextDisabled(text);
+            fixed (byte* p = NativeUtf8FromString(text)) { ImGuiNative.igTextDisabled(p); }
         }
 
-        public static void TextWrapped(string text)
+        public static unsafe void TextWrapped(string text)
         {
-            ImGuiNative.igTextWrapped(text);
+            fixed (byte* p = NativeUtf8FromString(text)) { ImGuiNative.igTextWrapped(p); }
         }
 
         public static unsafe void TextUnformatted(string message)
         {
-            fixed (byte* bytes = System.Text.Encoding.UTF8.GetBytes(message))
-            {
-                ImGuiNative.igTextUnformatted(bytes, null);
-            }
+            fixed (byte* p = NativeUtf8FromString(message)) { ImGuiNative.igTextUnformatted(p, null); }
         }
 
-        public static void LabelText(string label, string text)
+        public static unsafe void LabelText(string label, string text)
         {
-            ImGuiNative.igLabelText(label, text);
+            fixed (byte* p = NativeUtf8FromString(text)) { ImGuiNative.igLabelText(label, p); }
         }
 
         public static void Bullet()
@@ -111,9 +109,9 @@ namespace ImGuiNET
             ImGuiNative.igBullet();
         }
 
-        public static void BulletText(string text)
+        public static unsafe void BulletText(string text)
         {
-            ImGuiNative.igBulletText(text);
+            fixed (byte* p = NativeUtf8FromString(text)) { ImGuiNative.igBulletText(p); }
         }
 
         public static bool InvisibleButton(string id) => InvisibleButton(id, Vector2.Zero);
@@ -406,14 +404,14 @@ namespace ImGuiNET
                 displayFormatMax);
         }
 
-        public static bool Button(string message)
+        public unsafe static bool Button(string message)
         {
-            return ImGuiNative.igButton(message, Vector2.Zero);
+            fixed (byte* p = NativeUtf8FromString(message)) { return ImGuiNative.igButton(p, Vector2.Zero); }
         }
 
-        public static bool Button(string message, Vector2 size)
+        public unsafe static bool Button(string message, Vector2 size)
         {
-            return ImGuiNative.igButton(message, size);
+            fixed (byte* p = NativeUtf8FromString(message)) { return ImGuiNative.igButton(p, size); }
         }
 
         public static void SetNextWindowSize(Vector2 size, SetCondition condition)
@@ -495,40 +493,50 @@ namespace ImGuiNET
 
         public static bool BeginWindow(string windowTitle) => BeginWindow(windowTitle, WindowFlags.Default);
 
-        public static bool BeginWindow(string windowTitle, WindowFlags flags)
+        public static unsafe bool BeginWindow(string windowTitle, WindowFlags flags)
         {
             bool opened = true;
-            return ImGuiNative.igBegin(windowTitle, ref opened, flags);
+            fixed (byte* p = NativeUtf8FromString(windowTitle))
+            {
+                return ImGuiNative.igBegin(p, ref opened, flags);
+            }
         }
 
-        public static bool BeginWindow(string windowTitle, ref bool opened, WindowFlags flags)
+        public static unsafe bool BeginWindow(string windowTitle, ref bool opened, WindowFlags flags)
         {
-            return ImGuiNative.igBegin(windowTitle, ref opened, flags);
+            fixed (byte* p = NativeUtf8FromString(windowTitle))
+            {
+                return ImGuiNative.igBegin(p, ref opened, flags);
+            }
         }
 
-        public static bool BeginWindow(string windowTitle, ref bool opened, float backgroundAlpha, WindowFlags flags)
+        public static unsafe bool BeginWindow(string windowTitle, ref bool opened, float backgroundAlpha, WindowFlags flags)
         {
-            return ImGuiNative.igBegin2(windowTitle, ref opened, new Vector2(), backgroundAlpha, flags);
+            fixed (byte* p = NativeUtf8FromString(windowTitle))
+            {
+                return ImGuiNative.igBegin2(p, ref opened, new Vector2(), backgroundAlpha, flags);
+            }
         }
 
-        public static bool BeginWindow(string windowTitle, ref bool opened, Vector2 startingSize, WindowFlags flags)
+        public static unsafe bool BeginWindow(string windowTitle, ref bool opened, Vector2 startingSize, WindowFlags flags)
         {
-            return ImGuiNative.igBegin2(windowTitle, ref opened, startingSize, 1f, flags);
-        }
-        
-        public static bool BeginWindow(string windowTitle, ref bool opened, Vector2 startingSize, float backgroundAlpha, WindowFlags flags)
-        {
-            return ImGuiNative.igBegin2(windowTitle, ref opened, startingSize, backgroundAlpha, flags);
+            fixed (byte* p = NativeUtf8FromString(windowTitle))
+            {
+                return ImGuiNative.igBegin2(p, ref opened, startingSize, 1f, flags);
+            }
         }
 
-        public static bool BeginMenu(string label)
+        public static unsafe bool BeginWindow(string windowTitle, ref bool opened, Vector2 startingSize, float backgroundAlpha, WindowFlags flags)
         {
-            return ImGuiNative.igBeginMenu(label, true);
+            fixed (byte* p = NativeUtf8FromString(windowTitle))
+            {
+                return ImGuiNative.igBegin2(p, ref opened, startingSize, backgroundAlpha, flags);
+            }
         }
 
-        public static bool BeginMenu(string label, bool enabled)
+        public static unsafe bool BeginMenu(string label, bool enabled = true)
         {
-            return ImGuiNative.igBeginMenu(label, enabled);
+            fixed (byte* p = NativeUtf8FromString(label)) { return ImGuiNative.igBeginMenu(p, enabled); }
         }
 
         public static bool BeginMenuBar()
@@ -571,9 +579,9 @@ namespace ImGuiNET
             return MenuItem(label, string.Empty, false, enabled);
         }
 
-        public static bool MenuItem(string label, string shortcut, bool selected, bool enabled)
+        public static unsafe bool MenuItem(string label, string shortcut, bool selected, bool enabled)
         {
-            return ImGuiNative.igMenuItem(label, shortcut, selected, enabled);
+            fixed (byte* p = NativeUtf8FromString(label)) { return ImGuiNative.igMenuItem(p, shortcut, selected, enabled); }
         }
 
         public static unsafe bool InputText(string label, byte[] textBuffer, uint bufferSize, InputTextFlags flags, TextEditCallback textEditCallback)
@@ -628,17 +636,23 @@ namespace ImGuiNET
 
         public static unsafe void InputTextMultiline(string label, IntPtr textBuffer, uint bufferSize, Vector2 size, InputTextFlags flags, TextEditCallback callback)
         {
-            ImGuiNative.igInputTextMultiline(label, textBuffer, bufferSize, size, flags, callback, null);
+            fixed (byte* p = NativeUtf8FromString(label))
+            {
+                ImGuiNative.igInputTextMultiline(p, textBuffer, bufferSize, size, flags, callback, null);
+            }
+        }
+
+        public static unsafe void InputTextMultiline(string label, IntPtr textBuffer, uint bufferSize, Vector2 size, InputTextFlags flags, TextEditCallback callback, IntPtr userData)
+        {
+            fixed (byte* p = NativeUtf8FromString(label))
+            {
+                ImGuiNative.igInputTextMultiline(p, textBuffer, bufferSize, size, flags, callback, userData.ToPointer());
+            }
         }
 
         public static unsafe DrawData* GetDrawData()
         {
             return ImGuiNative.igGetDrawData();
-        }
-
-        public static unsafe void InputTextMultiline(string label, IntPtr textBuffer, uint bufferSize, Vector2 size, InputTextFlags flags, TextEditCallback callback, IntPtr userData)
-        {
-            ImGuiNative.igInputTextMultiline(label, textBuffer, bufferSize, size, flags, callback, userData.ToPointer());
         }
 
         public static bool BeginChildFrame(uint id, Vector2 size, WindowFlags flags)
@@ -877,29 +891,30 @@ namespace ImGuiNET
             ImGuiNative.igEndMainMenuBar();
         }
 
-        public static bool SmallButton(string label)
+        public static unsafe bool SmallButton(string label)
         {
-            return ImGuiNative.igSmallButton(label);
+            fixed (byte* p = NativeUtf8FromString(label)) { return ImGuiNative.igSmallButton(p); }
         }
 
-        public static bool BeginPopupModal(string name)
+        public static unsafe bool BeginPopupModal(string name)
         {
-            return ImGuiNative.igBeginPopupModal(name, WindowFlags.Default);
+            return BeginPopupModal(name, WindowFlags.Default);
         }
 
-        public static bool BeginPopupModal(string name, WindowFlags extraFlags)
+        public static unsafe bool BeginPopupModal(string name, WindowFlags extraFlags)
         {
-            return ImGuiNative.igBeginPopupModal(name, extraFlags);
+            fixed (byte* p = NativeUtf8FromString(name)) { return ImGuiNative.igBeginPopupModal(p, null, WindowFlags.Default); }
         }
 
         public static bool BeginPopupModal(string name, ref bool opened)
         {
-            return ImGuiNative.igBeginPopupModal(name, ref opened, WindowFlags.Default);
+            return BeginPopupModal(name, ref opened, WindowFlags.Default);
         }
 
-        public static bool BeginPopupModal(string name, ref bool opened, WindowFlags extraFlags)
+        public static unsafe bool BeginPopupModal(string name, ref bool opened, WindowFlags extraFlags)
         {
-            return ImGuiNative.igBeginPopupModal(name, ref opened, extraFlags);
+            byte b_opened = opened ? (byte)1 : (byte)0;
+            fixed (byte* p = NativeUtf8FromString(name)) { return ImGuiNative.igBeginPopupModal(p, &b_opened, WindowFlags.Default); }
         }
 
         public static bool Selectable(string label, bool isSelected, SelectableFlags flags)
@@ -1062,14 +1077,14 @@ namespace ImGuiNET
             ImGuiNative.igSetNextTreeNodeOpen(opened, setCondition);
         }
 
-        public static bool TreeNode(string label)
+        public static unsafe bool TreeNode(string label)
         {
-            return ImGuiNative.igTreeNode(label);
+            fixed (byte* p = NativeUtf8FromString(label)) { return ImGuiNative.igTreeNode(p); }
         }
 
-        public static bool TreeNodeEx(string label, TreeNodeFlags flags = 0)
+        public static unsafe bool TreeNodeEx(string label, TreeNodeFlags flags = 0)
         {
-            return ImGuiNative.igTreeNodeEx(label, flags);
+            fixed (byte* p = NativeUtf8FromString(label)) { return ImGuiNative.igTreeNodeEx(p, flags); }
         }
 
         public static void TreePop()
