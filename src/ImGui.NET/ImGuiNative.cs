@@ -772,9 +772,9 @@ namespace ImGuiNET
         [DllImport(cimguiLib)]
         public static extern void igMemFree(void* ptr);
         [DllImport(cimguiLib)]
-        public static extern string igGetClipboardText();
+        public static extern byte* igGetClipboardText();
         [DllImport(cimguiLib)]
-        public static extern void igSetClipboardText(string text);
+        public static extern void igSetClipboardText(byte* text);
 
         // public state access - if you want to share ImGui state between modules (e.g. DLL) or allocate it yourself
         [DllImport(cimguiLib)]

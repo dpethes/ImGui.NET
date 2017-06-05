@@ -1136,6 +1136,36 @@ namespace ImGuiNET
         public static void CalcListClipping(int itemsCount, float itemsHeight, ref int outItemsDisplayStart, ref int outItemsDisplayEnd)
         {
             ImGuiNative.igCalcListClipping(itemsCount, itemsHeight, ref outItemsDisplayStart, ref outItemsDisplayEnd);
-        }        
+        }
+
+        public static unsafe void SetClipboardText(string text)
+        {
+            fixed (byte* p = NativeUtf8FromString(text)) { ImGuiNative.igSetClipboardText(p); }
+        }
+
+        public static unsafe string GetClipboardText()
+        {
+            return StringFromNativeUtf8(ImGuiNative.igGetClipboardText());
+        }
+
+        public static byte[] NativeUtf8FromString(string str)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(str); // not null terminated!
+            Array.Resize(ref buffer, buffer.Length + 1);
+            buffer[buffer.Length - 1] = 0;
+            return buffer;
+        }
+
+        public static unsafe string StringFromNativeUtf8(byte* b)
+        {
+            if (b == null)
+                return string.Empty;
+            int length = 0;
+            while (b[length] != '\0')
+                length++;
+            byte[] buffer = new byte[length];
+            Marshal.Copy((IntPtr)b, buffer, 0, length);
+            return Encoding.UTF8.GetString(buffer, 0, length);
+        }
     }
 }
